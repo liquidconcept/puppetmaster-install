@@ -1,0 +1,4 @@
+
+package{"puppetmaster":
+  ensure => present,
+}

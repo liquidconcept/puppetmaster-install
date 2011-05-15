@@ -24,6 +24,12 @@ else
   echo "clone puppetmaster install repository"
   git clone https://github.com/liquidconcept/puppetmaster-install ~/puppetmaster-install
 
+  echo "run local puppet"
+  module_path=$(cd ~/puppetmaster-install && echo $PWD/modules)
+  script_path=$(cd ~/puppetmaster-install && echo $PWD/install.pp)
+
+  puppet --modulepath "$module_path" $script_path
+
   echo "remove puppetmaster install repository"
   rm -Rf ~/puppetmaster-install
 fi
