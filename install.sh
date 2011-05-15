@@ -21,4 +21,9 @@ else
   echo "install puppet..."
   apt-get install -y puppet
 
+  echo "clone puppetmaster install repository"
+  git clone https://github.com/liquidconcept/puppetmaster-install ~/puppetmaster-install
+
+  echo "remove puppetmaster install repository"
+  rm -Rf ~/puppetmaster-install
 fi
