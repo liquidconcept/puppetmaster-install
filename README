@@ -1,0 +1,12 @@
+= Puppetmaster bootstraping script
+
+== How to run script
+
+Login on the server and run fallwoing command.
+
+su -c "wget --no-check-certificate -q -O - https://github.com/liquidconcept/puppetmaster-install/raw/master/install.sh | sh && exit" -
+
+or
+
+wget --no-check-certificate -q -O ~/puppetmaster-install.sh https://github.com/liquidconcept/puppetmaster-install/raw/master/install.sh && sh ~/puppetmaster-install.sh && rm ~/puppetmaster-install.sh
+
