@@ -14,7 +14,6 @@ if [ "$USER" != 'root' ]; then
 
 # run script if root
 else
-
   echo "*** install git..."
   apt-get install -y git
 
@@ -22,7 +21,7 @@ else
   apt-get install -y puppet
 
   echo "*** clone puppetmaster install repository"
-  git clone https://github.com/liquidconcept/puppetmaster-install ~/puppetmaster-install
+  git clone git://github.com/liquidconcept/puppetmaster-install.git ~/puppetmaster-install
 
   echo "*** run local puppet"
   module_path=$(cd ~/puppetmaster-install && echo $PWD/modules)
