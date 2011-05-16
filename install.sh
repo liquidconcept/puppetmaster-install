@@ -1,12 +1,14 @@
 #!/bin/bash
 
 # retstart if not root
-if [ "$USER" != 'root' ]; then
+if [ "$USER" != 'root' ]
+then
   echo "*** You are not logged with root, login with root and restart the script"
 
   # choose between local adn remote script
   script_path=$(cd ${0%/*} && echo $PWD/${0##*/})
-  if [[ "$script_path" =~ /sh$ ]]; then
+  if [ "$script_path" = "/bin/sh" -o "$script_path" = "sh" ]
+  then
     su -c "wget --no-check-certificate -q -O - https://github.com/liquidconcept/puppetmaster-install/raw/master/install.sh | sh && exit" -
   else
     su -c "sh $script_path && exit" -
@@ -20,6 +22,24 @@ else
   echo "*** install puppet..."
   apt-get install -y puppet
 
+  echo "*** configure fqdn"
+  hostname=$(facter hostname)
+  ipaddress=$(facter ipaddress)
+  read -p "hostname is '$hostname', enter domain: " domain
+  while :
+  do
+    read -p "fqdn is now '$hostname.$domain', enter to continue or type another domain: " domain2
+    if [ "$domain2" = "" ]
+    then
+      break
+    fi
+    domain=$domain2
+  done
+  if [ $(grep -c -E "$ipaddress.+$hostname.$domain" /etc/hosts) -eq 0 ]
+  then
+    sed -i "s/$hostname/$hostname.$domain\t$hostname/g" /etc/hosts
+  fi
+
   echo "*** clone puppetmaster install repository"
   git clone git://github.com/liquidconcept/puppetmaster-install.git ~/puppetmaster-install
 
@@ -32,3 +52,4 @@ else
   echo "*** remove puppetmaster install repository"
   rm -Rf ~/puppetmaster-install
 fi
+
