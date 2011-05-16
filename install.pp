@@ -9,4 +9,5 @@ package{"puppet":
 }
 
 exec{"puppet agent --server $fqdn":
+  require => Package["puppetmaster-passenger", "puppet"],
 }
