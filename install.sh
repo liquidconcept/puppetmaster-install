@@ -6,12 +6,12 @@ then
   echo "*** You are not logged with root, login with root and restart the script"
 
   # choose between local adn remote script
-  script_path=$(cd ${0%/*} && echo $PWD/${0##*/})
-  if [ "$script_path" = "/bin/sh" -o "$script_path" = "sh" ]
+  script_path=$(cd $(dirname $0) && echo $PWD/$(basename $0))
+  if [ "$(basename $script_path)" = "install.sh" ]
   then
-    su -c "wget --no-check-certificate -q -O - https://github.com/liquidconcept/puppetmaster-install/raw/master/install.sh | sh && exit" -
-  else
     su -c "sh $script_path && exit" -
+  else
+    echo "*** exist, bad run method"
   fi
 
 # run script if root
@@ -44,7 +44,7 @@ else
     fi
   fi
 
-  script_path=$(cd ${0%/*} && echo $PWD/install.pp)
+  script_path=$(cd $(dirname $0) && echo $PWD/install.pp)
   if [ -e $script_path ]
   then
     echo "*** use local puppetmaster install repository: $(dirname $script_path)"
