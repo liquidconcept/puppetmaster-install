@@ -22,22 +22,26 @@ else
   echo "*** install puppet..."
   apt-get install -y puppet
 
-  echo "*** configure fqdn"
-  hostname=$(facter hostname)
-  ipaddress=$(facter ipaddress)
-  read -p "hostname is '$hostname', enter domain: " domain
-  while :
-  do
-    read -p "fqdn is now '$hostname.$domain', enter to continue or type another domain: " domain2
-    if [ "$domain2" = "" ]
-    then
-      break
-    fi
-    domain=$domain2
-  done
-  if [ $(grep -c -E "$ipaddress.+$hostname.$domain" /etc/hosts) -eq 0 ]
+  fqdn=$(facter fqdn)
+  if [ "$fqdn" = "" ]
   then
-    sed -i "s/$hostname/$hostname.$domain\t$hostname/g" /etc/hosts
+    echo "*** configure fqdn"
+    hostname=$(facter hostname)
+    ipaddress=$(facter ipaddress)
+    read -p "hostname is '$hostname', enter domain: " domain
+    while :
+    do
+      read -p "fqdn is now '$hostname.$domain', enter to continue or type another domain: " domain2
+      if [ "$domain2" = "" ]
+      then
+        break
+      fi
+      domain=$domain2
+    done
+    if [ $(grep -c -E "$ipaddress.+$hostname.$domain" /etc/hosts) -eq 0 ]
+    then
+      sed -i "s/$hostname/$hostname.$domain\t$hostname/g" /etc/hosts
+    fi
   fi
 
   echo "*** clone puppetmaster install repository"
