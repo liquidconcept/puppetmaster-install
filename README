@@ -1,8 +1,8 @@
-= Puppetmaster bootstraping script
+= Puppetmaster bootstrapping script
 
 == How to run script
 
-Login on the server and run fallwoing command.
+Login on the server and run following command.
 
 su -c "wget --no-check-certificate -q -O - https://github.com/liquidconcept/puppetmaster-install/raw/master/install.sh | sh && exit" -
 
