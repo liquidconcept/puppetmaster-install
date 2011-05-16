@@ -7,12 +7,7 @@ then
 
   # choose between local adn remote script
   script_path=$(cd $(dirname $0) && echo $PWD/$(basename $0))
-  if [ "$(basename $script_path)" = "install.sh" ]
-  then
-    su -c "sh $script_path && exit" -
-  else
-    echo "*** exist, bad run method"
-  fi
+  su -c "sh $script_path && exit" -
 
 # run script if root
 else
