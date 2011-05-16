@@ -44,13 +44,18 @@ else
     fi
   fi
 
-  echo "*** clone puppetmaster install repository"
-  git clone git://github.com/liquidconcept/puppetmaster-install.git ~/puppetmaster-install
+  script_path=$(cd ${0%/*} && echo $PWD/install.pp)
+  if [ -e $script_path ]
+  then
+    echo "*** use local puppetmaster install repository: $(dirname $script_path)"
+  else
+    echo "*** clone puppetmaster install repository"
+    git clone git://github.com/liquidconcept/puppetmaster-install.git ~/puppetmaster-install
+    script_path=$(cd ~/puppetmaster-install && echo $PWD/install.pp)
+  fi
+  module_path=$(cd $(dirname $script_path) && echo $PWD/modules)
 
   echo "*** run local puppet"
-  module_path=$(cd ~/puppetmaster-install && echo $PWD/modules)
-  script_path=$(cd ~/puppetmaster-install && echo $PWD/install.pp)
-
   puppet --modulepath "$module_path" $script_path
 
   echo "*** remove puppetmaster install repository"
