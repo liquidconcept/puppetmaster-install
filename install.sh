@@ -35,7 +35,7 @@ else
     done
     if [ $(grep -c -E "$ipaddress.+$hostname.$domain" /etc/hosts) -eq 0 ]
     then
-      sed -i "s/$hostname/$hostname.$domain\t$hostname/g" /etc/hosts
+      sed -i "s/$ipaddress/$ipaddress\t$hostname.$domain/g" /etc/hosts
     fi
   fi
 
