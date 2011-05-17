@@ -63,12 +63,16 @@ else
     read -p "Puppetmaster configuration repository (with a staging & stable branch): " repo
     if [ "$(echo $repo | sed 's%^git@%%')" != "$repo" ]
     then
-      mkdir -p $HOME/.ssh
-      chmod 700 $HOME/.ssh
-      ssh-keygen -N "" -f $HOME/.ssh/puppetmaster_install_id
+      if [ ! -f $HOME/.ssh/id_rsa.pub ]
+      then
+        mkdir -p $HOME/.ssh
+        chmod 700 $HOME/.ssh
+        ssh-keygen -N "" -f $HOME/.ssh/id_rsa
+        ssh_keygen="generated"
+      fi
       echo "Copy follwing public key to authorize to clone your puppetmaster configuration repository (enter when done or if you already have an access key configured for root user):"
       echo "--------------------"
-      cat $HOME/.ssh/puppetmaster_install_id.pub
+      cat $HOME/.ssh/id_rsa.pub
       echo "--------------------"
       read is_done
     fi
@@ -80,12 +84,11 @@ else
     then
       git clone -b stable $repo /etc/puppet/stable
     fi
-    if [ -f $HOME/.ssh/puppetmaster_install_id.pub ]
+   if [ "$ssh_keygen" = "generated" ]
     then
-      rm $HOME/.ssh/puppetmaster_install_id
+      rm $HOME/.ssh/id_rsa*
     fi
   fi
-
 
   echo "*** install puppetmaster..."
   apt-get install -y puppetmaster-passenger
