@@ -99,6 +99,7 @@ else
   echo "*** configure puppet master & puppet agent"
   service apache2 stop
   cat $script_dir/files/puppet.conf > /etc/puppet/puppet.conf
+  mkdir -p /var/lib/puppet/ssl/ca/crl
   sed -i -r "s%SSLCARevocationFile.+%SSLCARevocationPath     /var/lib/puppet/ssl/ca/crl%g" /etc/apache2/sites-available/puppetmaster
   service apache2 start
 
