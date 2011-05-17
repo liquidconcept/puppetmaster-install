@@ -46,7 +46,6 @@ else
   fi
 
   script_path=$(cd $(dirname $0) && echo $PWD/install.sh)
-  script_dir=$(dirname $script_path)
   if [ -e $script_path ]
   then
     echo "*** use local puppetmaster install repository: $(dirname $script_path)"
@@ -55,6 +54,7 @@ else
     git clone git://github.com/liquidconcept/puppetmaster-install.git /tmp/puppetmaster-install
     script_path=$(cd /tmp/puppetmaster-install && echo $PWD/install.pp)
   fi
+  script_dir=$(dirname $script_path)
 
   if [ ! -d /etc/puppet/staging -o ! -d /etc/puppet/stable ]
   then
