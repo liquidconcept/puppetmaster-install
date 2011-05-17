@@ -14,6 +14,9 @@ else
   echo "*** install git..."
   apt-get install -y git
 
+  echo "*** install facter..."
+  apt-get install -y facter
+
   fqdn=$(facter fqdn)
   if [ "$fqdn" = "" ]
   then
