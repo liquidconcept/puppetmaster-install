@@ -50,6 +50,36 @@ else
   fi
   module_path=$(cd $(dirname $script_path) && echo $PWD/modules)
 
+  if [ ! -d /etc/puppet/staging -o ! -d /etc/puppet/stable ]
+  then
+    echo "*** clone puppetmaster config reposiroty"
+    mkdir -p /etc/puppet
+    read -p "Puppetmaster configuration repository (with a staging & stable branch): " repo
+    if [ "$(echo $repo | sed 's%^git@%%')" != "$repo" ]
+    then
+      mkdir -p $HOME/.ssh
+      chmod 700 $HOME/.ssh
+      ssh-keygen -N "" -f $HOME/.ssh/puppetmaster_install_id
+      echo "Copy follwing public key to authorize to clone your puppetmaster configuration repository (enter when done or if you already have an access key configured for root user):"
+      echo "--------------------"
+      cat $HOME/.ssh/puppetmaster_install_id.pub
+      echo "--------------------"
+      read is_done
+    fi
+    if [ ! -d /etc/puppet/staging ]
+    then
+      git clone -b staging $repo /etc/puppet/staging
+    fi
+    if [ ! -d /etc/puppet/stable ]
+    then
+      git clone -b stable $repo /etc/puppet/stable
+    fi
+    if [ -f $HOME/.ssh/puppetmaster_install_id.pub ]
+    then
+      rm $HOME/.ssh/puppetmaster_install_id
+    fi
+  fi
+
   echo "*** run local puppet"
   puppet --modulepath "$module_path" $script_path
 
