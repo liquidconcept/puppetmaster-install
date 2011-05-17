@@ -14,9 +14,6 @@ else
   echo "*** install git..."
   apt-get install -y git
 
-  echo "*** install puppet..."
-  apt-get install -y puppet
-
   fqdn=$(facter fqdn)
   if [ "$fqdn" = "" ]
   then
@@ -39,7 +36,14 @@ else
     fi
   fi
 
-  script_path=$(cd $(dirname $0) && echo $PWD/install.pp)
+  echo "*** configue master host"
+  if [ $(grep -c -E "localhost.+puppet" /etc/hosts) -eq 0 ]
+  then
+    sed -i "s/localhost/localhost\tpuppet/g" /etc/hosts
+  fi
+
+  script_path=$(cd $(dirname $0) && echo $PWD/install.sh)
+  script_dir=$(dirname $script_path)
   if [ -e $script_path ]
   then
     echo "*** use local puppetmaster install repository: $(dirname $script_path)"
@@ -48,7 +52,6 @@ else
     git clone git://github.com/liquidconcept/puppetmaster-install.git /tmp/puppetmaster-install
     script_path=$(cd /tmp/puppetmaster-install && echo $PWD/install.pp)
   fi
-  module_path=$(cd $(dirname $script_path) && echo $PWD/modules)
 
   if [ ! -d /etc/puppet/staging -o ! -d /etc/puppet/stable ]
   then
@@ -80,8 +83,21 @@ else
     fi
   fi
 
-  echo "*** run local puppet"
-  puppet --modulepath "$module_path" $script_path
+
+  echo "*** install puppetmaster..."
+  apt-get install -y puppetmaster-passenger
+
+  echo "*** install puppet..."
+  apt-get install -y puppet
+
+  echo "*** configure puppet master & puppet agent"
+  service apache2 stop
+  cat $script_dir/files/puppet.conf > /etc/puppet/puppet.conf
+  sed -i -r "s%SSLCARevocationFile.+%SSLCARevocationPath     /var/lib/puppet/ssl/ca/crl%g" /etc/apache2/sites-available/puppetmaster
+  service apache2 start
+
+  echo "*** run puppet..."
+  puppet agent --test
 
   if [ -d /tmp/puppetmaster-install ]
   then
