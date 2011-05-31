@@ -39,12 +39,6 @@ else
     fi
   fi
 
-  echo "*** configue master host"
-  if [ $(grep -c -E "localhost.+puppet" /etc/hosts) -eq 0 ]
-  then
-    sed -i "s/localhost/localhost\tpuppet/g" /etc/hosts
-  fi
-
   script_path=$(cd $(dirname $0) && echo $PWD/install.sh)
   if [ -e $script_path ]
   then
@@ -98,9 +92,9 @@ else
 
   echo "*** configure puppet master & puppet agent"
   service apache2 stop
-  ln -sf /etc/puppet/staging/puppet.conf /etc/puppet/puppet.conf
-  ln -sf /etc/puppet/staging/auth.conf /etc/puppet/auth.conf
-  ln -sf /etc/puppet/staging/fileserver.conf /etc/puppet/fileserver.conf
+  ln -sf /etc/puppet/stable/puppet.conf /etc/puppet/puppet.conf
+  ln -sf /etc/puppet/stable/auth.conf /etc/puppet/auth.conf
+  ln -sf /etc/puppet/stable/fileserver.conf /etc/puppet/fileserver.conf
   mkdir -p /var/lib/puppet/ssl/ca/crl
   sed -i -r "s%SSLCARevocationFile.+%SSLCARevocationPath     /var/lib/puppet/ssl/ca/crl%g" /etc/apache2/sites-available/puppetmaster
   service apache2 start
