@@ -73,18 +73,10 @@ else
     if [ ! -d /etc/puppet/staging ]
     then
       git clone -b staging $repo /etc/puppet/staging
-    else
-      cd /etc/puppet/staging
-      git pull
-      cd -
     fi
     if [ ! -d /etc/puppet/stable ]
     then
       git clone -b stable $repo /etc/puppet/stable
-    else
-      cd /etc/puppet/stable
-      git pull
-      cd -
     fi
    if [ "$ssh_keygen" = "generated" ]
     then
@@ -97,6 +89,7 @@ else
 
   echo "*** install puppet..."
   apt-get install -y puppet
+  apt-get install -y libactiverecord-ruby
 
   echo "*** configure puppet master & puppet agent"
   service apache2 stop
